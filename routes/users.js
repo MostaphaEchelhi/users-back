@@ -14,6 +14,16 @@ router.get('/', function(req, res, next) {
   res.json(users);
 });
 
+router.get('/:userId', function(req, res, next) {
+  userId = req.params.userId;
+  console.log(userId);
+
+  let findUser = users.find(user => user.id == userId);
+
+  res.json(findUser);
+});
+
+
 router.post('/', function(req, res, next) {
 
   let newUser = req.body;
