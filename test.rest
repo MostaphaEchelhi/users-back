@@ -2,4 +2,16 @@ GET http://localhost:3000/users
 
 ###
 
-GET http://localhost:3000/users/1
+GET http://localhost:3000/users/641839217556eb476c701a2c
+
+###
+
+POST  http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "name": "younes",
+    "password": "test"
+}
+
+###

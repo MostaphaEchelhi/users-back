@@ -1,8 +1,8 @@
-const { json } = require('express');
 var express = require('express');
 var router = express.Router();
 const fs = require("fs");
 const crypto = require("crypto-js");
+const { ObjectId } = require('mongodb');
 // const salt = "pig are shit";
 
 let users = [
@@ -15,30 +15,54 @@ let users = [
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
+
+  req.app.locals.db.collection("users").find().toArray()
+  .then(result => {
+    console.log("result from get users" ,result);
+    res.json(result);
+  })
+
   //res.json(users);
-  fs.readFile("users.json", function(err, data) {
+  /*fs.readFile("users.json", function(err, data) {
     if (err) {
       console.log(err);
     } else {
       res.send(data)
       return;
     }
-  })
+  })*/
 });
 
 router.get('/:userId', function(req, res, next) {
   userId = req.params.userId;
   console.log(userId);
 
-  let findUser = users.find(user => user.id == userId);
+  req.app.locals.db.collection("users").findOne({"_id": new ObjectId(userId)})
+  .then(result => {
+    console.log("hitta user", result);
 
-  res.json(findUser);
+    res.json(result);
+  })
+
+  /*let findUser = users.find(user => user.id == userId);
+  res.json(findUser);*/
 });
 
 
 router.post('/', function(req, res, next) {
   let newUser = {name: req.body.name};
-  fs.readFile("users.json", function(err, data) {
+  let passwordToSave = crypto.SHA3(req.body.password).toString();
+  newUser.password = passwordToSave;
+
+  console.log("new user", newUser);
+
+  req.app.locals.db.collection("users").insertOne(newUser)
+  .then(result => {
+    console.log("result från db", result);
+    res.json(result);
+  })
+
+  /*fs.readFile("users.json", function(err, data) {
     if (err) {
       console.log(err);
     } else {
@@ -57,7 +81,7 @@ router.post('/', function(req, res, next) {
 
       })
     }
-  })
+  })*/
 });
 
 router.post('/login', function(req, res, next) {
