@@ -4,6 +4,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors')
 
+require("dotenv").config();
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -13,7 +15,8 @@ var app = express();
 
 app.use(cors());
 
-MongoClient.connect("mongodb://127.0.0.1:27017")
+
+MongoClient.connect(process.env.MONGODB_URI)
 .then(client => {
     console.log("DB är ok");
 

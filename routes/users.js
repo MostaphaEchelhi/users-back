@@ -7,45 +7,75 @@ const { ObjectId } = require('mongodb');
 
 let users = [
   {id: 1, name: "Mostapha", password: "fmp123"},
-  {id: 2, name: "Bob", password: "sth145"},
-  {id: 3, name: "Ahmed", password: "momo"},
-  {id: 4, name: "johan", password: "Sverige"},
-  {id: 5, name: "Mohammed", password: "Marocko"}
+  {id: 2, name: "Bob", password: "sth145", gender: 1},
+  {id: 3, name: "Ahmed", password: "momo", gender: [2, 1, 3]},
+  {id: 4, name: "johan", password: "Sverige", gender: 3},
+  {id: 5, name: "Mohammed", password: "Marocko", gender: 1}
+]
+
+let gender = [
+  {id: 1, ganderLabel: "Female"},
+  {id: 2, ganderLabel: "Male"},
+  {id: 3, ganderLabel: "Other"}
 ]
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
 
-  req.app.locals.db.collection("users").find().toArray()
+  /*req.app.locals.db.collection("users").find({name: "janne"}).project({password: false}).toArray()
   .then(result => {
     console.log("result from get users" ,result);
-    res.json(result);
-  })
+
+    let clenResult = [];
+
+    result.map(user => {
+      delete user.password;
+      clenResult.push(user)
+    })
+
+    res.json(clenResult);
+
+
+  
+  })*/
+
+
 
   //res.json(users);
-  /*fs.readFile("users.json", function(err, data) {
+  fs.readFile("users.json", function(err, data) {
     if (err) {
       console.log(err);
     } else {
       res.send(data)
       return;
     }
-  })*/
+  })
 });
 
-router.get('/:userId', function(req, res, next) {
-  userId = req.params.userId;
-  console.log(userId);
+router.get('/:userId/:token', function(req, res, next) {
+  let userId = req.params.userId;
+  /*let token = req.params.token;
+  console.log("token", token);
 
-  req.app.locals.db.collection("users").findOne({"_id": new ObjectId(userId)})
+  if (token ===  (process.env.API_NYCKEL) { "apihemlighet" 
+    req.app.locals.db.collection("users").findOne({"_id": new ObjectId(userId)})
   .then(result => {
     console.log("hitta user", result);
 
     res.json(result);
-  })
+  } else {
+    res.status(401).json({message: "Sorry, du får inte!"})
+  }
 
-  /*let findUser = users.find(user => user.id == userId);
-  res.json(findUser);*/
+  /*req.app.locals.db.collection("users").findOne({"_id": new ObjectId(userId)})
+  .then(result => {
+    console.log("hitta user", result);
+
+    res.json(result);
+  })*/
+
+  let findUser = users.find(user => user.id == userId);
+  res.json(findUser);
 });
 
 
@@ -56,13 +86,13 @@ router.post('/', function(req, res, next) {
 
   console.log("new user", newUser);
 
-  req.app.locals.db.collection("users").insertOne(newUser)
+  /*req.app.locals.db.collection("users").insertOne(newUser)
   .then(result => {
     console.log("result från db", result);
     res.json(result);
-  })
+  })*/
 
-  /*fs.readFile("users.json", function(err, data) {
+  fs.readFile("users.json", function(err, data) {
     if (err) {
       console.log(err);
     } else {
@@ -81,7 +111,7 @@ router.post('/', function(req, res, next) {
 
       })
     }
-  })*/
+  })
 });
 
 router.post('/login', function(req, res, next) {
